@@ -16,5 +16,7 @@ namespace UsuariosApp.Domain.Interfaces.Services
     public interface IUsuarioService
     {
         CriarContaResponse CriarConta(CriarContaRequest request);
+
+       AutenticarUsuarioResponse AutenticarUsuario(AutenticarUsuarioRequest request);
     }
 }

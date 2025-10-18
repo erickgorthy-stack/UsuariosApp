@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using UsuariosApp.Domain.Dtos.Requests;
 using UsuariosApp.Domain.Dtos.Response;
 using UsuariosApp.Domain.Entities;
+using UsuariosApp.Domain.Helpers;
 using UsuariosApp.Domain.Interfaces.Repositories;
 using UsuariosApp.Domain.Interfaces.Services;
 using UsuariosApp.Domain.Validators;
@@ -42,7 +43,7 @@ namespace UsuariosApp.Domain.Services
             };
 
             // Validar dados do usuário.
-            var Validator = new UsuarioValidator();
+            var Validator = new UsuarioValidator(_usuarioRepository);
             var result = Validator.Validate(usuario);
 
             // Verificar se a validação falhou.
@@ -50,6 +51,9 @@ namespace UsuariosApp.Domain.Services
             {
                 throw new ValidationException(result.Errors); // Menssagens de erro
             }
+            
+            //criptografar a senha do usuário
+            usuario.Senha = CryptoHelper.GetSHA256(usuario.Senha);
 
             //Buscando o perfil com o nome 'USUARIO'
             var perfil = _perfilRepository.Get("USUARIO");
@@ -68,6 +72,28 @@ namespace UsuariosApp.Domain.Services
                 usuario.Email,
                 perfil != null ? perfil.Nome : string.Empty,
                 DateTime.Now
+                );
+        }
+
+        AutenticarUsuarioResponse IUsuarioService.AutenticarUsuario(AutenticarUsuarioRequest request)
+        {
+            //Buscar o usuário no banco de dados através do email e da senha
+            var usuario = _usuarioRepository.Get(request.Email, CryptoHelper.GetSHA256(request.Senha));
+
+            //Verificando se o usuário não foi encontrado
+            if (usuario == null)
+            {
+                throw new ApplicationException("Usuário ou senha inválidos.");
+            }
+
+            //Retornar os dados do usuário autenticado
+            return new AutenticarUsuarioResponse(
+                    usuario.Id,     //Id do usuário
+                    usuario.Nome,   //Nome do usuário
+                    usuario.Email,  //Email do usuário
+                    usuario.Perfil.Nome,    //Nome do perfil
+                    DateTime.Now,    //Data e hora de acesso
+                    JwtTokenHelper.GenerateToken(usuario.Email, usuario.Perfil.Nome)
                 );
         }
     }

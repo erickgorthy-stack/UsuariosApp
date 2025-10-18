@@ -43,5 +43,24 @@ namespace UsuariosApp.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+        [HttpPost("Autenticar")]
+        [ProducesResponseType(typeof(AutenticarUsuarioResponse), 200)]
+        public IActionResult Autenticar([FromBody] AutenticarUsuarioRequest request)
+        {
+            try
+            {
+                var response = _usuarioService.AutenticarUsuario(request);
+                return Ok(response);
+            }
+            catch (ApplicationException e)
+            {
+                return StatusCode(401, e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
     }
 }
