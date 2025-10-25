@@ -13,7 +13,7 @@ namespace UsuariosApp.Infra.Data.Contexts
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             //Connectionstring do Banco de dados
-            var connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BDUsuariosApp;Integrated Security=True;";
+            var connectionString = "Data Source=Localhost,1434;Initial Catalog=master;User ID=sa;Password=Coti@2025;Encrypt=False";
             
             //Conexão com o banco de dados
             optionsBuilder.UseSqlServer(connectionString);

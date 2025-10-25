@@ -31,3 +31,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+//Configurando classe Program como pública para testes
+public partial class Program { }
