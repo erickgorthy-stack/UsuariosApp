@@ -17,6 +17,17 @@ builder.Services.AddTransient<IUsuarioService, UsuarioService>();
 builder.Services.AddTransient<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddTransient<IPerfilRepository, PerfilRepository>();
 
+//Criar a política de CORS da API
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AngularAppPolicy", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") // origem do Angular
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,6 +36,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Ativar CORS
+app.UseCors("AngularAppPolicy");
+
 
 app.UseAuthorization();
 

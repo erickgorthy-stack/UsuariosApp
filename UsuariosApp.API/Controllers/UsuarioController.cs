@@ -43,7 +43,7 @@ namespace UsuariosApp.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-        [HttpPost("Autenticar")]
+        [HttpPost("autenticar")]
         [ProducesResponseType(typeof(AutenticarUsuarioResponse), 200)]
         public IActionResult Autenticar([FromBody] AutenticarUsuarioRequest request)
         {
